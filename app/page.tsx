@@ -5,7 +5,7 @@ export default function Home() {
       <Link href="/classic">
         <div
           className="main-button"
-          style={{ backgroundImage: "url('/Button.png')" }}
+
           aria-label="Go to Classic mode"
         >
           CLASSIC

@@ -9,7 +9,11 @@ const placeholderItems = [
   "Sun Shangxiang",
   "Diao Chan"
 ];
-const SearchBox = () => {
+type SearchBoxProps = {
+  onSelect: (name: string) => void;
+};
+
+const SearchBox: React.FC<SearchBoxProps> = ({ onSelect }) => {
   const [input, setInput] = useState("");
   return (
     <div className="w-full max-w-xl px-4 py-6 bg-white/80 dark:bg-black/40 rounded-lg shadow-md flex flex-col items-center mb-8">
@@ -33,6 +37,9 @@ const SearchBox = () => {
               <div
                 key={idx}
                 className="px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900 cursor-pointer"
+                onClick={() => {
+                  onSelect(item);
+                }}
               >
                 {item}
               </div>
