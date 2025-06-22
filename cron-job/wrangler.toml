@@ -1,0 +1,14 @@
+name = "musoudle-cron"
+main = "src/worker.ts"
+compatibility_date = "2025-06-19"
+
+kv_namespaces = [
+  { binding = "CHARACTERS_KV", id = "de828a108ec7481599121a7c1fe4ad46" }
+]
+
+[triggers]
+crons = ["0 0 * * *"] # Daily at midnight UTC
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true

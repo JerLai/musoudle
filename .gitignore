@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# opennextjs
+/.open-next
+# cloudflare
+/cloudflare-env.d.ts
+.wrangler
+
+# scripts
+upload.js
+convert-json.js
+
+# worker configuration
+**/worker-configuration.d.ts
+
+# etc
+characters-kv.json
+characters.xlsx
