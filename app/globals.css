@@ -58,3 +58,11 @@ body {
     linear-gradient(#1a1a1a, #1a1a1a) padding-box,
     linear-gradient(to bottom right, #ffd700, #fff5c3) border-box;
 }
+
+.uppercase-first-big {
+  text-transform: uppercase;
+}
+.uppercase-first-big::first-letter {
+  font-size: 1.5em;
+  font-weight: bold;
+}

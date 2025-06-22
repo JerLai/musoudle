@@ -6,3 +6,15 @@
   [assets]
   directory = ".open-next/assets"
   binding = "ASSETS"
+
+  [[kv_namespaces]]
+  binding = "CHARACTERS_KV"
+  id = "de828a108ec7481599121a7c1fe4ad46"
+  preview_id = "previewmusoudle"
+
+  # wrangler.toml (wrangler v3.88.0^)
+  [observability.logs]
+  enabled = true
+
+
+
