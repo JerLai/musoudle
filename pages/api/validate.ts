@@ -6,7 +6,7 @@ interface CharacterData {
   Name: string;
   "Faction(s)": string;
   "Playable Debut": string;
-  WeaponType: string;
+  "Weapon Type": string;
   Born: number;
   Died: number;
   Gender: string;
@@ -36,9 +36,17 @@ export function determineOverlapStatus(
       value: guess["Playable Debut"],
       match: guess["Playable Debut"] === character["Playable Debut"],
     },
+    Born: {
+      value: guess.Born,
+      match: guess.Born === character.Born ? 2 : 0,
+    },
     Died: {
       value: guess.Died,
       match: guess.Died === character.Died ? 2 : 0,
+    },
+    "Weapon Type": {
+      value: guess["Weapon Type"],
+      match: categoryContains(guess["Weapon Type"], character["Weapon Type"]),
     },
     Gender: {
       value: guess.Gender,
@@ -48,6 +56,19 @@ export function determineOverlapStatus(
       value: guess.Height,
       match: guess.Height === character.Height ? 2 : 0,
     },
+    Name: guess.Name, // If you want to keep Name as a string
+  };
+}
+function fullMatchObject(character: CharacterData) {
+  return {
+    "Faction(s)": { value: character["Faction(s)"], match: 2 },
+    "Playable Debut": { value: character["Playable Debut"], match: 2 },
+    Born: { value: character.Born, match: 2 },
+    Died: { value: character.Died, match: 2 },
+    "Weapon Type": { value: character["Weapon Type"], match: 2 },
+    Gender: { value: character.Gender, match: 2 },
+    Height: { value: character.Height, match: 2 },
+    Name: character.Name, // If you want to keep Name as a string
   };
 }
 
@@ -78,9 +99,6 @@ export default async function handler(
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
-
-  console.log("validate.ts called");
-  console.log("Request body:", req.body);
   const body = req.body;
   // Ensure body is an object with a 'guess' property
   if (typeof body !== "object" || body === null || !("guess" in body)) {
@@ -105,7 +123,8 @@ export default async function handler(
   }
 
   if (guess === charToday.data.Name) {
-    return res.status(200).json({ correct: true, characterData: charToday.data });
+    const fullMatch = fullMatchObject(charToday.data);
+    return res.status(200).json({ correct: true, characterData: fullMatch });
   } else {
     // As the name is not correct, we need to fetch the data for the guessed character
     const guessRaw = await kv.get(`character:${guess?.replaceAll(" ", "")}`);

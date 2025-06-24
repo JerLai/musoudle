@@ -2,7 +2,7 @@ export interface CharacterData {
   Name: string;
   "Faction(s)": { value:string, match: number };
   "Playable Debut": { value:string, match: number };
-  WeaponType: { value:string, match: number };
+  "Weapon Type": { value:string, match: number };
   Born: { value:string, match: number };
   Died: { value:string, match: number };
   Gender: { value:string, match: number };
