@@ -69,8 +69,6 @@ body {
 
 .frame-wrapper {
   position: relative;
-  width: 194px;   /* match your image width */
-  height: 213px;  /* match your image height */
   display: inline-block;
   background: green;
 }
@@ -124,6 +122,28 @@ body {
   animation: stretch-in 1s cubic-bezier(0.23, 1.02, 0.32, 1) both;
 }
 
+@keyframes tv-on {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+    filter: brightness(10);
+  }
+  20% {
+    opacity: 1;
+    transform: scaleY(0.1);
+    filter: brightness(2);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    filter: brightness(1);
+  }
+}
+.animate-tv-on {
+  animation: tv-on 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+  transform-origin: center;
+}
+
 @keyframes tv-off {
   0% {
     opacity: 1;
@@ -144,4 +164,18 @@ body {
 .animate-tv-off {
   animation: tv-off 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   transform-origin: 50% 50%;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-slide-in {
+  animation: slide-in 0.5s cubic-bezier(0.4,0,0.2,1);
 }

@@ -4,6 +4,8 @@ import "./globals.css";
 
 import Logo from "./components/Logo";
 import InfoGlobal from "./components/InfoGlobal";
+import PuzzleProvider from "./context-providers/PuzzleProvider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col items-center pt-8`}
       >
-        <InfoGlobal />
-        <Logo />
-        {children}
+        <PuzzleProvider>
+          <InfoGlobal />
+          <Logo />
+          {children}
+        </PuzzleProvider>
       </body>
     </html>
   );

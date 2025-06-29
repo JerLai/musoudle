@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import characters from '../../public/data/characters-lite.json'; // Adjust the path as necessary
+import characters from '../../public/data/characters-lite.json';
 import Image from 'next/image';
 
 type SearchBoxProps = {
@@ -100,9 +100,9 @@ return (
                     key={idx}
                     className="uppercase-first-big px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900 cursor-pointer"
                     onClick={() => {
-                      console.log(`Selected: ${item}`);
                       onSelect(item);
                       playSelectSound();
+                      setInput("");
                     }}
                     onMouseEnter={playHoverSound}
                   >
