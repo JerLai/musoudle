@@ -1,3 +1,11 @@
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
+
+[env.prod]
 name = "musoudle"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
@@ -6,17 +14,9 @@ kv_namespaces = [
   { binding = "CHARACTERS_KV", id = "de828a108ec7481599121a7c1fe4ad46" },
   { binding = "USER_GUESSES_KV", id = "e4130fe1b5394af7b9a0e26266ee898e" }
 ]
-
 routes = [
   { pattern = "musoudle.net", custom_domain = true }
 ]
-
-[assets]
-directory = ".open-next/assets"
-binding = "ASSETS"
-# wrangler.toml (wrangler v3.88.0^)
-[observability.logs]
-enabled = true
 
 [env.staging]
 name = "musoudle-staging"

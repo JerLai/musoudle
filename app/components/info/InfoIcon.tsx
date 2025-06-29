@@ -4,6 +4,11 @@ export default function InfoIcon({ onClick }: { onClick: () => void }) {
   return (
     <button
       className="fixed top-4 right-4 z-50 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
+      style={{
+        background: "var(--background)",
+        color: "var(--foreground)",
+        opacity: 0.85,
+      }}
       onClick={onClick}
       aria-label="About & Privacy"
     >
