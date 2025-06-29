@@ -7,6 +7,10 @@ kv_namespaces = [
   { binding = "USER_GUESSES_KV", id = "e4130fe1b5394af7b9a0e26266ee898e" }
 ]
 
+routes = [
+  { pattern = "musoudle.net", custom_domain = true }
+]
+
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
