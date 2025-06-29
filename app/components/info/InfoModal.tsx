@@ -9,7 +9,11 @@ export default function InfoModal({ open, onClose }: { open: boolean; onClose: (
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative"
+        className="rounded-lg shadow-lg max-w-lg w-full p-6 relative"
+        style={{
+          background: "var(--background)",
+          color: "var(--foreground)"
+        }}
         onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
         <button

@@ -22,7 +22,7 @@
 body {
   background: url('/background.jpg') no-repeat center center fixed;
   background-size: cover;
-  /* color: var(--foreground); */
+  color: var(--foreground);
   font-family: 'Merriweather', serif; /* font-serif */
   font-size: 1.25rem; /* text-xl */
   font-style: italic;
@@ -71,6 +71,11 @@ body {
   position: relative;
   display: inline-block;
   background: green;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #000;
+  opacity: 0.7;
 }
 
 .frame-wrapper.color-green { background: green; }
