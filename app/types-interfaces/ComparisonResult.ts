@@ -1,4 +1,4 @@
-export interface CharacterData {
+export interface ComparisonResult {
   Name: string;
   "Faction(s)": { value:string, match: number };
   "Playable Debut": { value:string, match: number };

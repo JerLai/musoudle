@@ -9,13 +9,7 @@ interface CharacterData {
   // other fields optional
 }
 
-export default {
-  async scheduled(
-    _controller: ScheduledController,
-    env: Env,
-    _ctx: ExecutionContext,
-  ) {
-    console.log("cron processed");
+async function runRotation(env: Env) {
     const kv = env.CHARACTERS_KV;
 
     // Get rotation state
@@ -26,20 +20,35 @@ export default {
     const names: string[] = [];
 
     const list: KVNamespaceListResult<unknown> = await kv.list();
+  
+    // List of special keys to exclude
+    const specialKeys = new Set([
+      "character:today",
+      "character:previous",
+      "rotationIndex",
+      "rotationCycle"
+    ]);
+
     const values: (string | null)[] = await Promise.all(
-      list.keys.map(async (key: KVNamespaceListKey<unknown>): Promise<string | null> => {
+      list.keys
+        .filter((key: KVNamespaceListKey<unknown>) => {
+          // Filter out special keys
+          return !specialKeys.has(key.name);
+        })
+        .map(async (key: KVNamespaceListKey<unknown>): Promise<string | null> => { 
         const raw: string | null = await env.CHARACTERS_KV.get(key.name);
-        if (raw) {
-          try {
-            const data: CharacterData = JSON.parse(raw);
-            return data.Name;
-          } catch (e) {
-            console.warn("Failed to parse:", key.name);
+          if (raw) {
+            try {
+              const data: CharacterData = JSON.parse(raw);
+              return data.Name;
+            } catch (e) {
+              console.warn("Failed to parse:", key.name);
+            }
           }
-        }
-        return null;
-      })
+          return null;
+        })
     );
+
     names.push(...values.filter((v): v is string => v !== null));
 
     if (names.length === 0) {
@@ -49,7 +58,11 @@ export default {
 
     // Create a deterministic shuffle for this cycle
     const shuffled = seededShuffle(names, cycle);
-    const selectedKey = shuffled[index];
+    console.log("shuffled characters:");
+    console.log({ shuffled });
+    console.log("char for today");
+    console.log({ today: shuffled[index]});
+    const selectedKey = `character:${shuffled[index].replaceAll(' ', '')}`;
 
     const characterData = await kv.get(selectedKey);
     if (!characterData) {
@@ -76,5 +89,24 @@ export default {
     ]);
 
     console.log(`Selected ${selectedKey} as today's character.`);
+}
+
+export default {
+  async scheduled(
+    _controller: ScheduledController,
+    env: Env,
+    _ctx: ExecutionContext,
+  ) {
+    console.log("cron processed");
+    await runRotation(env);
   },
+
+  async fetch(req: Request, env: Env, _ctx: ExecutionContext) {
+    const url = new URL(req.url);
+    if (url.pathname === "/admin/rotate") {
+      await runRotation(env);
+      return new Response("Rotation executed", { status: 200 });
+    }
+    return new Response("Not found", { status: 404 });
+  }
 };

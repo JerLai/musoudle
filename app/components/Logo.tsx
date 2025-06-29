@@ -23,8 +23,8 @@ const Logo = () => {
       <div
         className={
           isHome
-            ? `w-40 sm:w-56 md:w-72 lg:w-96 aspect-square rounded-lg bg-cover bg-center mb-8${isHome ? " pt-8" : ""}`
-            : "w-20 sm:w-28 md:w-36 lg:w-48 aspect-square rounded-lg bg-cover bg-center mb-8"
+            ? `w-40 sm:w-56 md:w-72 lg:w-96 aspect-square rounded-lg bg-cover bg-center${isHome ? " pt-8" : ""}`
+            : "w-20 sm:w-28 md:w-36 lg:w-48 aspect-square rounded-lg bg-cover bg-center"
         }
         style={{ backgroundImage: "url('/Musoudle_logo.png')" }}
         onClick={() => {

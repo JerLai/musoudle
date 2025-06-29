@@ -7,14 +7,34 @@ interface CharacterData {
   "Faction(s)": string;
   "Playable Debut": string;
   "Weapon Type": string;
-  Born: number;
-  Died: number;
+  Born: string;
+  Died: string;
   Gender: string;
   Height: string;
   Hint: string;
   // Add other properties if needed
 }
 
+interface ComparisonResult {
+  Name: string;
+  "Faction(s)": { value: string; match: number };
+  "Playable Debut": { value: string; match: number };
+  "Weapon Type": { value: string; match: number };
+  Born: { value: string; match: number };
+  Died: { value: string; match: number };
+  Gender: { value: string; match: number };
+  Height: { value: string; match: number };
+}
+
+interface Guess {
+  correct: boolean;
+  comparisonResult: ComparisonResult;
+}
+
+interface UserGuesses {
+  guesses: Guess[];
+  solved: boolean;
+}
 let charToday: { data: CharacterData } | null = null;
 
 /**
@@ -26,7 +46,7 @@ let charToday: { data: CharacterData } | null = null;
 export function determineOverlapStatus(
   guess: CharacterData,
   character: CharacterData
-) {
+): ComparisonResult {
   return {
     "Faction(s)": {
       value: guess["Faction(s)"],
@@ -34,7 +54,7 @@ export function determineOverlapStatus(
     },
     "Playable Debut": {
       value: guess["Playable Debut"],
-      match: guess["Playable Debut"] === character["Playable Debut"],
+      match: guess["Playable Debut"] === character["Playable Debut"] ? 2 : 0,
     },
     Born: {
       value: guess.Born,
@@ -59,7 +79,7 @@ export function determineOverlapStatus(
     Name: guess.Name, // If you want to keep Name as a string
   };
 }
-function fullMatchObject(character: CharacterData) {
+function fullMatchObject(character: CharacterData): ComparisonResult {
   return {
     "Faction(s)": { value: character["Faction(s)"], match: 2 },
     "Playable Debut": { value: character["Playable Debut"], match: 2 },
@@ -92,13 +112,27 @@ export function categoryContains(
   return 0; // No match
 }
 
+function getUidFromCookie(req: NextApiRequest): string | undefined {
+  const cookie = req.headers.cookie;
+  if (!cookie) return undefined;
+  const match = cookie.match(/musoudle_uid=([^;]+)/);
+  return match ? match[1] : undefined;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('Request received for /api/validate');
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
+
+  const uid = getUidFromCookie(req);
+  if (!uid) {
+    return res.status(400).json({ error: 'User ID not found in cookies' });
+  }
+
   const body = req.body;
   // Ensure body is an object with a 'guess' property
   if (typeof body !== "object" || body === null || !("guess" in body)) {
@@ -122,19 +156,62 @@ export default async function handler(
     }
   }
 
-  if (guess === charToday.data.Name) {
-    const fullMatch = fullMatchObject(charToday.data);
-    return res.status(200).json({ correct: true, characterData: fullMatch });
-  } else {
-    // As the name is not correct, we need to fetch the data for the guessed character
-    const guessRaw = await kv.get(`character:${guess?.replaceAll(" ", "")}`);
-    // Compare the data between the guessed character and the character for today
-    const parseGuess = guessRaw ? JSON.parse(guessRaw) : null;
-    const comparison = determineOverlapStatus(parseGuess, charToday.data);
-    return res.status(200).json({
-      correct: false,
-      characterData: comparison,
-    });
-  }
-}
+  const day = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
+  const userGuessKey = `guesses:${uid}:${day}`;
+  const guessKv = getCloudflareContext().env.USER_GUESSES_KV;
+  // Attempt to get the existing guesses (if any) for the user on this day
+  const existingGuessesRaw = await guessKv.get(userGuessKey);
+
+  if (guess === charToday.data.Name) {
+    const fullMatch: ComparisonResult = fullMatchObject(charToday.data);
+    const userGuesses: UserGuesses = {
+      guesses: [],
+      solved: true,
+    };
+    const guess: Guess = {
+      correct: true,
+      comparisonResult: fullMatch
+    };
+
+    if (!existingGuessesRaw) {
+      userGuesses.guesses = [guess];
+    } else {
+      const existingGuesses = JSON.parse(existingGuessesRaw);
+      userGuesses.guesses = [guess, ...existingGuesses.guesses];
+    }
+
+    await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
+    return res.status(200).json({ correct: true, comparisonResult: fullMatch });
+  }
+
+  // As the name is not correct, we need to fetch the data for the guessed character
+  const guessRaw = await kv.get(`character:${guess?.replaceAll(" ", "")}`);
+  // Compare the data between the guessed character and the character for today
+  const parseGuess = guessRaw ? JSON.parse(guessRaw) : null;
+  const comparison = determineOverlapStatus(parseGuess, charToday.data);
+
+  const userGuesses: UserGuesses = {
+    guesses: [],
+    solved: false,
+  };
+
+  const wrongGuess: Guess = {
+    correct: false,
+    comparisonResult: comparison
+  };
+
+  if (!existingGuessesRaw) {
+    userGuesses.guesses = [wrongGuess];
+  } else {
+      const existingGuesses = JSON.parse(existingGuessesRaw);
+      userGuesses.guesses = [wrongGuess, ...existingGuesses.guesses];
+  }
+
+  await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
+
+  return res.status(200).json({
+    correct: false,
+    comparisonResult: comparison,
+  });
+}

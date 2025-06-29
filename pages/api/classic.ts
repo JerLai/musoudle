@@ -10,6 +10,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('Request received for /api/classic');
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method Not Allowed' });
     return;
@@ -28,7 +29,7 @@ export default async function handler(
 
     try {
       const character: CharacterData = JSON.parse(raw);
-      res.status(200).json({ name: character.Name });
+      return res.status(200).json({ name: character.Name });
     } catch (err) {
         return res.status(500).json({ error: `Failed to parse character data. Error: ${err}` });
     }
