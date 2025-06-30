@@ -43,7 +43,7 @@ const ClassicPage = () => {
   }, [currentDay]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen uppercase-first-big">
+    <div className="flex flex-col items-center justify-center min-h-screen uppercase-first-big">
       { state.solved ? (
         <SolvedFrame character={state.guesses[0]?.comparisonResult.Name} />
       ) : (
