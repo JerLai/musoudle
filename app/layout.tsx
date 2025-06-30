@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Logo from "./components/Logo";
-import InfoGlobal from "./components/InfoGlobal";
 import PuzzleProvider from "./context-providers/PuzzleProvider";
 
 const geistSans = Geist({
@@ -33,7 +32,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col items-center pt-8`}
       >
         <PuzzleProvider>
-          <InfoGlobal />
           <Logo />
           {children}
         </PuzzleProvider>

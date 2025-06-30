@@ -45,7 +45,18 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSelect, correct }) => {
 
 return (
   <div
-    className="relative w-full max-w-[879px] aspect-[879/288] min-h-[288px] mb-8 flex flex-col items-center justify-center"
+    className="
+      relative
+      w-full
+      max-w-[879px]
+      aspect-[879/288]
+      min-h-[180px] sm:min-h-[288px]
+      mb-8
+      flex flex-col items-center justify-center
+      px-2 sm:px-6
+      box-border
+    "
+    style={{ maxWidth: '100vw' }}
   >
     {/* Semi-transparent background */}
     <div className="absolute inset-0 bg-gray-800 bg-opacity-60 rounded-lg z-0" />
@@ -63,7 +74,7 @@ return (
     {/* Content */}
     <div className="relative z-20 w-full h-full flex flex-col items-center justify-between px-6 pt-4 pb-12">
       <div className="w-full flex flex-col items-center">
-        <span className="uppercase-first-big text-xl sm:text-2xl md:text-3xl font-bold text-center text-gray-100 drop-shadow">
+        <span className="uppercase-first-big text-xl sm:text-2xl font-bold text-center text-gray-100 drop-shadow">
           Guess the Dynasty Warriors officer!
         </span>
         <span className="uppercase-first-big mt-2 text-sm sm:text-base text-gray-200 text-center drop-shadow">
@@ -80,7 +91,7 @@ return (
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Search for an officer..."
-              className="uppercase-first-big w-full max-w-md px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white/80"
+              className="uppercase-first-big w-full max-w-xs sm:max-w-md px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white/80"
             />
             {input && filtered.length > 0 && (
               <div 
@@ -91,14 +102,15 @@ return (
                   bg-white dark:bg-black/90
                   border border-gray-300 dark:border-gray-600
                   rounded
-                  w-full max-w-md
+                  w-full max-w-md sm:max-w-md
                   max-h-60 overflow-y-auto mt-1 shadow-lg
+                  text-sm sm:text-base
                 "
               >
                 {filtered.map((item, idx) => (
                   <div
                     key={idx}
-                    className="uppercase-first-big px-4 py-2 hover:bg-blue-100 dark:hover:bg-blue-900 cursor-pointer"
+                    className="uppercase-first-big px-3 sm:px-4 py-1 sm:py-2 hover:bg-blue-100 dark:hover:bg-blue-900 cursor-pointer"
                     onClick={() => {
                       onSelect(item);
                       playSelectSound();
