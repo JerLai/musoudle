@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). Musoudle is a guessing game inspired from Wordle and many other similar spin-off to guess things about the Dynasty Warriors franchise
 
-## Getting Started
+## Getting Started: Next.js Development
 
 First, run the development server:
 
