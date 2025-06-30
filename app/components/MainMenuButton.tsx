@@ -4,11 +4,13 @@ import { useRouter } from 'next/navigation';
 
 type MainMenuButtonProps = {
   name: string;
+  type?: 'active' | 'disabled';
 };
 
-const MainMenuButton: React.FC<MainMenuButtonProps> = ({ name }) => {
+const MainMenuButton: React.FC<MainMenuButtonProps> = ({ name, type = 'active' }) => {
   const buttonHoverRef = useRef<HTMLAudioElement>(null);
   const buttonSelectRef = useRef<HTMLAudioElement>(null);
+  const buttonSelectLockedRef = useRef<HTMLAudioElement>(null);
   const router = useRouter();
 
   const playSelectSoundAndNavigate = () => {
@@ -34,6 +36,33 @@ const MainMenuButton: React.FC<MainMenuButtonProps> = ({ name }) => {
       audio.play();
     }
   };
+
+  const playSelectLockedSound = () => {
+    const audio = buttonSelectLockedRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play();
+    }
+  };
+
+  if (type === 'disabled') {
+    return (
+      <div>
+        <button
+          className="main-button grayscale cursor-not-allowed opacity-60"
+          aria-disabled="true"
+          onClick={playSelectLockedSound}
+          onMouseEnter={playHoverSound}
+          tabIndex={-1}
+          type="button"
+        >
+          {name.toUpperCase()}
+        </button>
+        <audio ref={buttonHoverRef} src="/main_menu_option.mp3" preload="auto" />
+        <audio ref={buttonSelectLockedRef} src="/main_menu_option_select_locked.mp3" preload="auto" />
+      </div>
+    );
+  }
 
   return (
     <div>

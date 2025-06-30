@@ -45,12 +45,12 @@ const GuessContainer: React.FC<GuessContainerProps> = ({ guessesData, animateIdx
   }, [animateIdx, guessesData.length]);
 
   return (
-    <div className="flex flex-col p-4 m-4 border-4 text-center w-72 xxs:w-80 xs:w-96 sm:w-3/4 lg:w-auto">
+    <div className="flex flex-col bg-gray-800 p-4 m-4 border-4 text-center w-72 xxs:w-80 xs:w-96 sm:w-3/4 lg:w-auto">
       <div className="flex flex-col overflow-x-auto">
         {guessesData.length > 0 && (
           <>
             {/* Header Row */}
-            <div className="guess-row flex mb-2 items-center justify-center m-2 w-full min-w-[1040px]">
+            <div className="guess-row flex mb-2 items-center justify-center m-2 min-w-[1200px]">
               {columns.map((col) => (
                 <div
                   key={col}
@@ -78,7 +78,7 @@ const GuessContainer: React.FC<GuessContainerProps> = ({ guessesData, animateIdx
               const shouldAnimate = animateIdx === idx;
               return (
                 <div
-                  className={`guess-row flex items-center justify-center m-2 min-w-[1040px] ${
+                  className={`guess-row flex mb-2 items-center justify-center m-2 min-w-[1200px] ${
                     shouldAnimate
                       ? rowVisible
                         ? "animate-slide-in"

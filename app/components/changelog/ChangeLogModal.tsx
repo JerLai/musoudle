@@ -14,7 +14,8 @@ const changelog: ChangelogEntry[] = [
     changes: [
       "Added changelog modal",
       "Improved mobile responsiveness",
-      "Adjusted styling for dark mode users"
+      "Adjusted styling for dark mode users",
+      "Added disabled buttons for future modes",
     ],
   },
   {

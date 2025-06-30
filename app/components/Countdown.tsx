@@ -25,7 +25,7 @@ const Countdown = () => {
   }, []);
 
   return (
-    <div className="uppercase text-center text-lg font-semibold text-gray-700 bg-white/80 mt-4 mb-6 py-4 px-8">
+    <div className="uppercase text-center text-lg font-semibold text-gray-700 bg-white/80 mb-6 py-4 px-8">
       Next puzzle in: <span className="font-mono">{formatTime(msLeft)}</span>
     </div>
   );
