@@ -7,8 +7,8 @@ import { Guess } from '../types-interfaces/Guess';
 import SolvedFrame from '../components/SolvedFrame';
 
 const ClassicPage = () => {
-  const { state, submitGuess, currentDay } = useContext(PuzzleContext)!;
-  const [hintUnlocked, setHintUnlocked] = useState(false);
+  const { state, submitGuess, loadHint, currentDay } = useContext(PuzzleContext)!;
+  const [showHint, setShowHint] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [animateOff, setAnimateOff] = useState(false);
   const [prevCharacter, setPrevCharacter] = useState<string | null>(null);
@@ -22,9 +22,9 @@ const ClassicPage = () => {
       setTimeout(() => setLastAnimatedGuess(null), 600);
 
     }
-    // Make hint available after 4 guesses
     if (result.hint) {
-      setHintUnlocked(true);
+      setShowHint(false);
+      loadHint(result.hint)
     }
     // If the guess is correct, show the victory modal
     if (result.correct) {
@@ -36,7 +36,7 @@ const ClassicPage = () => {
           setShowModal(false);
           setAnimateOff(false);
         }, 700);
-      }, 6300);
+      }, 6300)
     }
   };
 
@@ -63,28 +63,15 @@ const ClassicPage = () => {
           {4 - state.guesses.length} guess{4 - state.guesses.length === 1 ? '' : 'es'} until hint unlocks
         </div>
       )}
-      {state.hint && !state.solved && !hintUnlocked && (
+      {state.guesses.length >= 4 && !state.solved && !showHint && (
         <button
           className="uppercase-first-big mt-4 px-4 py-2 bg-yellow-200 text-yellow-900 rounded shadow font-bold hover:bg-yellow-300 transition"
-          onClick={() => setHintUnlocked(true)}
+          onClick={() => setShowHint(true)}
         >
           Unlock Hint
         </button>
       )}
-      {(hintUnlocked || state.solved) && state.hint && (
-        <div className="mt-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded shadow max-w-lg text-center">
-          <span className="font-bold uppercase-first-big">Hint:</span> {state.hint}
-        </div>
-      )}
-      {state.hint && !state.solved && !hintUnlocked && (
-        <button
-          className="uppercase-first-big mt-4 px-4 py-2 bg-yellow-200 text-yellow-900 rounded shadow font-bold hover:bg-yellow-300 transition"
-          onClick={() => setHintUnlocked(true)}
-        >
-          Unlock Hint
-        </button>
-      )}
-      {(hintUnlocked || state.solved) && state.hint && (
+      {(state.solved || showHint) && state.hint && (
         <div className="mt-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded shadow max-w-lg text-center">
           <span className="font-bold uppercase-first-big">Hint:</span> {state.hint}
         </div>

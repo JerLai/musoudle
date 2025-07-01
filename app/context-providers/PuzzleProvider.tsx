@@ -86,6 +86,10 @@ export default function PuzzleProvider({ children }: { children: React.ReactNode
       });
   }, []);
 
+  const loadHint = useCallback((hint: string) => {
+    dispatch({ type: 'HINT_UNLOCKED', hint });
+  }, []);
+
   useEffect(() => {
     loadProgress();
   }, [currentDay, loadProgress]);
@@ -103,7 +107,7 @@ export default function PuzzleProvider({ children }: { children: React.ReactNode
 
 
   return (
-    <PuzzleContext.Provider value={{ state, submitGuess, resetPuzzle, loaded, currentDay }}>
+    <PuzzleContext.Provider value={{ state, submitGuess, loadHint, resetPuzzle, loaded, currentDay }}>
       {children}
     </PuzzleContext.Provider>
   );

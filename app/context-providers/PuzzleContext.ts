@@ -17,6 +17,7 @@ type PuzzleState = {
 type PuzzleContextType = {
   state: PuzzleState;
   submitGuess: (_guessString: string) => Promise<Guess>;
+  loadHint: (_hint: string) => void;
   resetPuzzle: () => void;
   loaded: boolean;
   currentDay: string;

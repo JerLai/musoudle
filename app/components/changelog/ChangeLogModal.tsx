@@ -9,6 +9,14 @@ type ChangelogEntry = {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: "v1.0.6-hotfix",
+    date: "2025-06-30",
+    changes: [
+      "Hotfix for hint display issue",
+      "Prep for global solve count and adjustment to category clues"
+    ],
+  },
+  {
     version: "v1.0.6",
     date: "2025-06-30",
     changes: [
