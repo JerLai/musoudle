@@ -9,6 +9,14 @@ type ChangelogEntry = {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: "v1.0.6",
+    date: "2025-06-30",
+    changes: [
+      "Quick implementation of hints (provided after 4 guesses)",
+      "UI improvements for hint display to be done later"
+    ],
+  },
+  {
     version: "v1.0.5",
     date: "2025-06-29",
     changes: [

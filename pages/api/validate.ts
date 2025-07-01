@@ -34,6 +34,7 @@ interface Guess {
 interface UserGuesses {
   guesses: Guess[];
   solved: boolean;
+  hint: string | undefined;
 }
 let charToday: { data: CharacterData } | null = null;
 
@@ -168,6 +169,7 @@ export default async function handler(
     const userGuesses: UserGuesses = {
       guesses: [],
       solved: true,
+      hint: charToday.data.Hint,
     };
     const guess: Guess = {
       correct: true,
@@ -182,7 +184,9 @@ export default async function handler(
     }
 
     await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
-    return res.status(200).json({ correct: true, comparisonResult: fullMatch });
+    const totalGuesses = userGuesses.guesses.length;
+    const hint: string | undefined = totalGuesses >= 4 ? charToday.data.Hint : undefined;
+    return res.status(200).json({ correct: true, comparisonResult: fullMatch, hint });
   }
 
   // As the name is not correct, we need to fetch the data for the guessed character
@@ -194,6 +198,7 @@ export default async function handler(
   const userGuesses: UserGuesses = {
     guesses: [],
     solved: false,
+    hint: undefined
   };
 
   const wrongGuess: Guess = {
@@ -207,11 +212,14 @@ export default async function handler(
       const existingGuesses = JSON.parse(existingGuessesRaw);
       userGuesses.guesses = [wrongGuess, ...existingGuesses.guesses];
   }
-
+  const totalGuesses = userGuesses.guesses.length;
+  const hint: string | undefined = totalGuesses >= 4 ? charToday.data.Hint : undefined;
+  userGuesses.hint = hint;
   await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
 
   return res.status(200).json({
     correct: false,
     comparisonResult: comparison,
+    hint
   });
 }

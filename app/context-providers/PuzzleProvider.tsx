@@ -8,17 +8,20 @@ import { getCurrentUTCDateString, msUntilNextUTCMidnight } from '../utils/dateUt
 type PuzzleState = {
   guesses: Guess[];
   solved: boolean;
+  hint?: string;
 };
 
 type LoadProgressResponse = {
   guesses: Guess[];
   solved: boolean;
+  hint?: string;
 };
 
 type Action =
   | { type: 'ADD_GUESS'; guess: Guess }
   | { type: 'RESET' }
-  | { type: 'LOAD'; state: PuzzleState };
+  | { type: 'LOAD'; state: PuzzleState }
+  | { type: 'HINT_UNLOCKED'; hint: string };
 
 const initialState: PuzzleState = {
   guesses: [],
@@ -36,6 +39,11 @@ function puzzleReducer(state: PuzzleState, action: Action): PuzzleState {
       return initialState;
     case 'LOAD':
       return action.state;
+    case 'HINT_UNLOCKED':
+      return {
+        ...state,
+        hint: action.hint,
+      };
     default:
       return state;
   }
@@ -70,6 +78,10 @@ export default function PuzzleProvider({ children }: { children: React.ReactNode
         if (data && data.guesses) {
           dispatch({ type: 'LOAD', state: { guesses: data.guesses, solved: data.solved } });
           setLoaded(true);
+        }
+        if (data.hint) {
+          console.log('Hint unlocked:', data.hint);
+          dispatch({ type: 'HINT_UNLOCKED', hint: data.hint });
         }
       });
   }, []);
