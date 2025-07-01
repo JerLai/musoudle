@@ -11,6 +11,7 @@ type Guess = {
 type PuzzleState = {
   guesses: Guess[];
   solved: boolean;
+  hint?: string;
 };
 
 type PuzzleContextType = {

@@ -20,6 +20,7 @@ interface Guess {
 interface UserGuesses {
   guesses: Guess[];
   solved: boolean;
+  hint: string | undefined;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
