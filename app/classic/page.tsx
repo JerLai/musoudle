@@ -76,7 +76,20 @@ const ClassicPage = () => {
           <span className="font-bold uppercase-first-big">Hint:</span> {state.hint}
         </div>
       )}
-      <GuessContainer guessesData={state.guesses} animateIdx={lastAnimatedGuess} />
+      {state.hint && !state.solved && !hintUnlocked && (
+        <button
+          className="uppercase-first-big mt-4 px-4 py-2 bg-yellow-200 text-yellow-900 rounded shadow font-bold hover:bg-yellow-300 transition"
+          onClick={() => setHintUnlocked(true)}
+        >
+          Unlock Hint
+        </button>
+      )}
+      {(hintUnlocked || state.solved) && state.hint && (
+        <div className="mt-4 px-4 py-2 bg-yellow-100 text-yellow-800 rounded shadow max-w-lg text-center">
+          <span className="font-bold uppercase-first-big">Hint:</span> {state.hint}
+        </div>
+      )}
+      {state.guesses.length > 0 && <GuessContainer guessesData={state.guesses} animateIdx={lastAnimatedGuess} />}
       {/* Modal */}
       {showModal && (
         <div
