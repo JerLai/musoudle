@@ -13,6 +13,7 @@ const changelog: ChangelogEntry[] = [
     date: "2025-06-30",
     changes: [
       "Quick implementation of hints (provided after 4 guesses)",
+      "UI improvements for hint display to be done later"
     ],
   },
   {
