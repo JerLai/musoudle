@@ -142,10 +142,16 @@ export default async function handler(
 
   const guess = body.guess;
 
-  const kv = getCloudflareContext().env.CHARACTERS_KV;
+  const env = getCloudflareContext().env;
+
+  const CHARACTERS_KV = env.CHARACTERS_KV;
+
+  const USER_GUESSES_KV = env.USER_GUESSES_KV;
+
+
   // If this worker is a cold start, we need to fetch the character data from the KV store
   if (!charToday) {
-    const raw = await kv.get("character:today");
+    const raw = await CHARACTERS_KV.get("character:today");
     if (!raw) {
       return res.status(404).json({ error: "No character selected for today." });
     }
@@ -160,9 +166,8 @@ export default async function handler(
   const day = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
   const userGuessKey = `guesses:${uid}:${day}`;
-  const guessKv = getCloudflareContext().env.USER_GUESSES_KV;
   // Attempt to get the existing guesses (if any) for the user on this day
-  const existingGuessesRaw = await guessKv.get(userGuessKey);
+  const existingGuessesRaw = await USER_GUESSES_KV.get(userGuessKey);
 
   if (guess === charToday.data.Name) {
     const fullMatch: ComparisonResult = fullMatchObject(charToday.data);
@@ -183,14 +188,14 @@ export default async function handler(
       userGuesses.guesses = [guess, ...existingGuesses.guesses];
     }
 
-    await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
+    await USER_GUESSES_KV.put(userGuessKey, JSON.stringify(userGuesses));
     const totalGuesses = userGuesses.guesses.length;
     const hint: string | undefined = totalGuesses >= 4 ? charToday.data.Hint : undefined;
     return res.status(200).json({ correct: true, comparisonResult: fullMatch, hint });
   }
 
   // As the name is not correct, we need to fetch the data for the guessed character
-  const guessRaw = await kv.get(`character:${guess?.replaceAll(" ", "")}`);
+  const guessRaw = await CHARACTERS_KV.get(`character:${guess?.replaceAll(" ", "")}`);
   // Compare the data between the guessed character and the character for today
   const parseGuess = guessRaw ? JSON.parse(guessRaw) : null;
   const comparison = determineOverlapStatus(parseGuess, charToday.data);
@@ -215,7 +220,7 @@ export default async function handler(
   const totalGuesses = userGuesses.guesses.length;
   const hint: string | undefined = totalGuesses >= 4 ? charToday.data.Hint : undefined;
   userGuesses.hint = hint;
-  await guessKv.put(userGuessKey, JSON.stringify(userGuesses));
+  await USER_GUESSES_KV.put(userGuessKey, JSON.stringify(userGuesses));
 
   return res.status(200).json({
     correct: false,

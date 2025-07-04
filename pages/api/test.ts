@@ -1,11 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 
-interface CharacterData {
-  Name: string;
-  // Add other properties if needed
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -17,22 +12,13 @@ export default async function handler(
   }
 
   const env = getCloudflareContext().env;
-
   const CHARACTERS_KV = env.CHARACTERS_KV;
 
   if (!CHARACTERS_KV) {
     res.status(500).json({ error: 'KV binding not available' });
     return;
   }
-    const raw = await CHARACTERS_KV.get("character:previous");
-    if (!raw) {
-      return res.status(500).json({ error: 'Character data not found for the day' });
-    }
 
-    try {
-      const character: CharacterData = JSON.parse(raw);
-      return res.status(200).json({ name: character.Name });
-    } catch (err) {
-        return res.status(500).json({ error: `Failed to parse character data. Error: ${err}` });
-    }
+  await CHARACTERS_KV.put("test", "foo");
+  return res.status(200).json({ message: 'Test successful' });
 }
