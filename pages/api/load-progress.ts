@@ -34,9 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const day = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
 
   const userGuessKey = `guesses:${uid}:${day}`;
-  const guessKv = getCloudflareContext().env.USER_GUESSES_KV;
+  const env = getCloudflareContext().env;
 
-  const existingGuessesRaw = await guessKv.get(userGuessKey);
+  const USER_GUESSES_KV = env.USER_GUESSES_KV;
+
+  const existingGuessesRaw = await USER_GUESSES_KV.get(userGuessKey);
   if (!existingGuessesRaw) {
     return res.status(200).json({ guesses: [], solved: false });
   }
