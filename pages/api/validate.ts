@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getCloudflareContext } from '@opennextjs/cloudflare';
-
+import writeCounter from '../utils/writeCounter';
 
 interface CharacterData {
   Name: string;
@@ -151,6 +151,7 @@ export default async function handler(
 
   // If this worker is a cold start, we need to fetch the character data from the KV store
   if (!charToday) {
+    console.log("No data cached from Worker on cold start");
     const raw = await CHARACTERS_KV.get("character:today");
     if (!raw) {
       return res.status(404).json({ error: "No character selected for today." });
@@ -188,6 +189,8 @@ export default async function handler(
       userGuesses.guesses = [guess, ...existingGuesses.guesses];
     }
 
+    const MUSOUDLE_COUNTER_WS = env.MUSOUDLE_COUNTER_WS;
+    await writeCounter(MUSOUDLE_COUNTER_WS);
     await USER_GUESSES_KV.put(userGuessKey, JSON.stringify(userGuesses));
     const totalGuesses = userGuesses.guesses.length;
     const hint: string | undefined = totalGuesses >= 4 ? charToday.data.Hint : undefined;
