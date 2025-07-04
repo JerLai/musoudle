@@ -26,7 +26,7 @@ routes = [
   { pattern = "musoudle.net", custom_domain = true }
 ]
 services = [
-  { binding = "DURABLE_MUSOUDLE_COUNTER", service = "durable-musoudle-counter"}
+  { binding = "DURABLE_MUSOUDLE_COUNTER", service = "durable-musoudle-counter", entrypoint= "CounterService"}
 ]
 [env.prod.vars]
 MUSOUDLE_COUNTER_WS = "https://durable-musoudle-counter.kamito14321.workers.dev"
@@ -41,7 +41,7 @@ kv_namespaces = [
   { binding = "USER_GUESSES_KV", id = "700ae3d6e5194b4c8dd133947c26efc2" }
 ]
 services = [
-  { binding = "DURABLE_MUSOUDLE_COUNTER", service = "durable-musoudle-counter-staging" }
+  { binding = "DURABLE_MUSOUDLE_COUNTER", service = "durable-musoudle-counter-staging", entrypoint = "CounterService" }
 ]
 [env.staging.vars]
 MUSOUDLE_COUNTER_WS = "https://durable-musoudle-counter-staging.kamito14321.workers.dev"
